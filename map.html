@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map and Directions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Map and Directions</h1>
+    </header>
+    <main>
+        <section id="directions">
+            <h2>Directions to: <span id="locationName"></span></h2>
+            <div id="map">
+                <!-- Map or directions will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Vardhaman College of Engineering. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Function to get URL parameters
+        function getQueryParams() {
+            var params = {};
+            var queryString = window.location.search.substring(1);
+            var regex = /([^&=]+)=([^&]*)/g;
+            var m;
+            while (m = regex.exec(queryString)) {
+                params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+            }
+            return params;
+        }
+        var dict = {
+            "cse hod" : "cse_hod.jpg",
+            "ece hod" : "ece_hod.jpg",
+            "kaguya" : "kaguya.jpg"
+
+        } 
+
+        // Function to load the map or directions
+        function loadMap() {
+            var params = getQueryParams();
+            var location = params['location'];
+            if (!location) {
+                document.getElementById('map').innerText = "Location not specified.";
+                return;
+            }
+
+            document.getElementById('locationName').innerText = location;
+
+            // Here you can customize this part to load the appropriate map or directions
+            var mapContainer = document.getElementById('map');
+            var mapImageUrl = `maps/${dict[location]}`; // Example: Store maps as images
+            mapContainer.innerHTML = `<img src="${mapImageUrl}" alt="Map to ${location}">`;
+
+            // Alternatively, you can dynamically create directions based on the location parameter
+            // Example:
+            // mapContainer.innerHTML = `<p>Directions to ${location}: ...</p>`;
+        }
+  
+
+        // Load the map on page load
+        window.onload = loadMap;
+    </script>
+</body>
+</html>

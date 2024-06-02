@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Navigation System</h1>
+    </header>
+    <main>
+        <section id="search">
+            <h2>Find Your Destination</h2>
+            <select id="destination">
+                <option value="main_gate">Main Gate</option>
+                <option value="library">Library</option>
+                <option value="first_block">Block One</option>
+                <option value="block_three">Block Three</option>
+                <option value="block_five">Block Five</option>
+                <option value="hostel_gate">Hostel Gate</option>
+            </select>
+            <button onclick="showMap()">Show Map</button>
+        </section>
+        <section id="map-display" style="display: none;">
+            <h2>Map to Destination</h2>
+            <div id="map" style="height: 500px;"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Vardhaman College of Engineering. All rights reserved.</p>
+    </footer>
+
+    <script>
+        var map;
+
+        // Initialize the map
+        function initMap() {
+            map = L.map('map').setView([17.254289795597682, 78.30742416774297], 17); // Default view
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Function to show the map based on the selected destination
+        function showMap() {
+            var destination = document.getElementById('destination').value;
+            var selectedCoordinates = destinations[destination];
+            var imageUrl = "maps/college.jpg";
+            var imageBounds = [
+                [17.254031, 78.304908], // Bottom-left corner
+                [17.255614, 78.309145]  // Top-right corner
+            ];
+
+            if (selectedCoordinates) {
+                // Show the map display section
+                var mapDisplay = document.getElementById('map-display');
+                mapDisplay.style.display = 'block';
+
+                // Initialize the map if it hasn't been initialized yet
+                if (!map) {
+                    initMap();
+                }
+
+                // Remove any existing overlays
+                map.eachLayer(function (layer) {
+                    if (layer instanceof L.ImageOverlay) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                // Add the georeferenced image as an overlay
+                L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+                // Remove existing markers
+                map.eachLayer(function (layer) {
+                    if (layer instanceof L.Marker) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                // Add a marker for the destination
+                L.marker(selectedCoordinates).addTo(map).bindPopup(destination.replace('_', ' ')).openPopup();
+
+                // Zoom the map to fit the bounds of the image
+                map.fitBounds(imageBounds);
+            } else {
+                alert('Invalid destination');
+            }
+        }
+
+        // Destination coordinates
+        var destinations = {
+            main_gate: [17.25431111, 78.30740278],
+            library: [17.25490556, 78.30856389],
+            first_block: [17.25423333, 78.30506111],
+            block_three: [17.25469722, 78.30665833],
+            block_five: [17.25488056, 78.30797222],
+            hostel_gate: [17.25378333, 78.30525556]
+        };
+    </script>
+</body>
+</html>
